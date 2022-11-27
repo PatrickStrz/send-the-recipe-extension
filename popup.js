@@ -1,4 +1,4 @@
-async function sendText(phone) {
+async function sendText(phone, ingredients) {
     console.log("should make request")
         try {
           console.log("requesting")
@@ -13,7 +13,7 @@ async function sendText(phone) {
           },
           redirect: 'follow', // manual, *follow, error
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: JSON.stringify({"name": "ingredients", phone}) // body data type must match "Content-Type" header
+          body: JSON.stringify({"name": ingredients, phone}) // body data type must match "Content-Type" header
         } );
           const record=await res.json();
           console.log('hihi data:',record);
@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", () => {
             chrome.tabs.sendMessage(tabs[0].id, {
                 type: "send-message-clicked", payload: { phone
         }}, function(response) {
-            sendText(phone)
+            sendText(phone, response.status)
               console.log(response.status);
               alert(`sent ingredients to ${phone}: \n ------------- \n ${response.status}`)
             });
