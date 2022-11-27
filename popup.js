@@ -1,4 +1,4 @@
-async function sendText() {
+async function sendText(phone) {
     console.log("should make request")
         try {
           console.log("requesting")
@@ -13,7 +13,7 @@ async function sendText() {
           },
           redirect: 'follow', // manual, *follow, error
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          body: JSON.stringify({"name": "EXTENSH", "phone": "+14168060340"}) // body data type must match "Content-Type" header
+          body: JSON.stringify({"name": "ingredients", phone}) // body data type must match "Content-Type" header
         } );
           const record=await res.json();
           console.log('hihi data:',record);
@@ -30,13 +30,16 @@ async function sendText() {
 window.addEventListener("DOMContentLoaded", () => {  
     // console.log(getIngredients())
     const button = document.getElementById('send-recipe-btn')
-
-
-
+    const getPhoneNumber = () => document.getElementById('phone-input').value
     button.addEventListener('click', (e) => {
+        const phone = getPhoneNumber()
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {type: "send-message-clicked"}, function(response) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+                type: "send-message-clicked", payload: { phone
+        }}, function(response) {
+            sendText(phone)
               console.log(response.status);
+              alert(`sent ingredients to ${phone}: \n ------------- \n ${response.status}`)
             });
           });
     } )
