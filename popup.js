@@ -2,7 +2,7 @@ async function sendText(phone, ingredients) {
     console.log("should make request")
         try {
           console.log("requesting")
-          const res=await fetch ("https://mmfu3ya9sh.execute-api.us-east-1.amazonaws.com/dev/send-message", {
+          const res=await fetch ("https://f93ojhumoj.execute-api.us-east-1.amazonaws.com/prod/send-message", {
           method: 'POST', // *GET, POST, PUT, DELETE, etc.
         //   mode: 'cors', // no-cors, *cors, same-origin
         //   cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
