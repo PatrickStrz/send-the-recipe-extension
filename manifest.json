@@ -4,8 +4,8 @@
     "name": "Send ingredients",
     "description": "sends ingredients from recipes",
     "action": {
-      "default_popup": "emptyState.html",
-      "default_icon": "pizza-slice.png"
+      "default_popup": "popup.html",
+      "default_icon": "watermelon_emoji.png"
     },
     "background": {
       "service_worker": "background.js"
@@ -16,7 +16,7 @@
           "js": ["content.js"]
         }
       ],
-    "permissions": ["activeTab"]
+    "permissions": ["declarativeContent", "activeTab"]
 
   }
 

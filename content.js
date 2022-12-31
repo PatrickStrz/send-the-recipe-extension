@@ -1,4 +1,5 @@
  const getIngredients = () => {
+  console.log("looking for ingredients")
         const script = document.querySelector('script[type="application/ld+json"]')
         if (script) {
           const recipe =  JSON.parse(script.innerText)['@graph'].find((item)=> item["@type"] === 'Recipe')
@@ -9,8 +10,6 @@
         }
         return null
      }
-
-console.log("looking for ingredients")
 
 let ingredients  
 
@@ -23,18 +22,19 @@ let ingredients
 
 
 if (ingredients) {
+  console.log("ingredients evaluated")
     // Inform the background page that 
 // this tab should have a page-action.
 chrome.runtime.sendMessage({
   sender: 'content',
   type: 'recipe',
   payload: {
-    ingredients
+    recipe: { ingredients}
   }
 })
 
 } else {
-  console.log('no recipe - sending message')
+  // console.log('no recipe - sending message')
   chrome.runtime.sendMessage({
     sender: 'content',
     type: 'no-recipe',
@@ -43,13 +43,24 @@ chrome.runtime.sendMessage({
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      console.log(sender.tab ?
-                  "from a content script:" + sender.tab.url :
-                  "from the extension");
+      // console.log("MESSAGE IN CONTENT", request)
       if (request.type === "send-message-clicked") {
-        console.log("PAYLOAD:", request.payload)
+
         const ingredients = getIngredients()
         sendResponse({status: ingredients ? ingredients : "no ingredients error"});
       }
+      if (request.type === "TAB_ACTIVATED") {
+        console.log("TAB RELOADED - IN CONTENT")
+        ingredients = getIngredients()
+        if (ingredients) {
+          chrome.runtime.sendMessage({
+            sender: 'content',
+            type: 'recipe',
+            payload: {
+              recipe: { ingredients }
+            }
+          })
+        }
+      } 
     }
   );
