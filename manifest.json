@@ -1,8 +1,8 @@
 {   
-    "version": "1.0",
+    "version": "0.0.1",
     "manifest_version": 3,
-    "name": "Send ingredients",
-    "description": "sends ingredients from recipes",
+    "name": "Send The Recipe",
+    "description": "Sends recipes from the page you are on to your phone number",
     "action": {
       "default_popup": "popup.html",
       "default_icon": "watermelon_emoji.png"
@@ -16,7 +16,7 @@
           "js": ["content.js"]
         }
       ],
-    "permissions": ["declarativeContent", "activeTab"]
+    "permissions": ["activeTab"]
 
   }
 
