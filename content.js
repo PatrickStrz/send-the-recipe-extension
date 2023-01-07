@@ -1,15 +1,63 @@
+
+/* 
+
+cases
+
+- type is ['recipe']
+- type is 'Recipe'
+- type is schema 
+  - schema includes recipe 
+
+*/
+
+
+/*  TODO
+ Deal with multiple ld/json ( get POTENTIAL recipe script ) type = "@"
+ */
+
+
+const isTypeRecipe = (type) => {
+  console.log('checking type for', type, typeof type)
+  if (Array.isArray(type)) {
+    // console.log('type is array')
+    const recipe = type.find(item => item.toLowerCase() === 'recipe')
+    return Boolean(recipe)
+  } 
+  if (typeof type === "string") 
+    return type.toLowerCase() === ('recipe')
+}
+
+
+ const getLDJSONScript = () => document.querySelector('script[type="application/ld+json"]')
+ const getRecipe = () => {
+  const script = JSON.parse(getLDJSONScript().innerText)
+  if (!script) return null
+
+  if (Array.isArray(script)) {
+    // console.log('isArray')
+    // console.log('script',script)
+    return script.find((item)=> isTypeRecipe(item["@type"]))
+  }
+  if (typeof script['@type'] == 'string' && isTypeRecipe(script['@type'])) {
+    return script
+  }
+  if (script["@graph"]) {
+    return script['@graph'].find((item)=> isTypeRecipe(item["@type"]))
+  }
+ }
+ 
+//  console.log('recipe')
+
  const getIngredients = () => {
   console.log("looking for ingredients")
-        const script = document.querySelector('script[type="application/ld+json"]')
-        if (script) {
-          const recipe =  JSON.parse(script.innerText)['@graph'].find((item)=> item["@type"] === 'Recipe')
-          if (recipe) {
-            const ingredients = recipe.recipeIngredient.join("\r\n")
-            return ingredients
-          }
-        }
-        return null
-     }
+  const recipe = getRecipe()
+  // console.log('recipe: ', recipe)
+  if (recipe) {
+    const ingredients = recipe.recipeIngredient.join("\r\n")
+    return ingredients
+  }
+  return null
+}
 
 let ingredients  
 
@@ -23,7 +71,7 @@ let ingredients
 
 if (ingredients) {
   console.log("ingredients evaluated")
-    // Inform the background page that 
+// Inform the background page that 
 // this tab should have a page-action.
 chrome.runtime.sendMessage({
   sender: 'content',
@@ -43,7 +91,6 @@ chrome.runtime.sendMessage({
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      // console.log("MESSAGE IN CONTENT", request)
       if (request.type === "send-message-clicked") {
 
         const ingredients = getIngredients()
